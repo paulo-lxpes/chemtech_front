@@ -1,7 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Stack, useTheme } from "@mui/material"
-import { Formik, useFormikContext } from "formik"
+import React, { useEffect, useState } from "react"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, useTheme } from "@mui/material"
+import { Formik, FormikHandlers, FormikState } from "formik"
 import moment from "moment"
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import Swal from "sweetalert2"
 import { Cliente } from "../interfaces/ICliente"
@@ -23,40 +23,42 @@ const validationSchema = yup.object().shape({
   ciD_COD: yup.number().integer().min(1, "Escolha uma cidade").required("Escolha uma cidade")
 })
 
-const ClienteDialog = forwardRef<any, Props>(({ open, setOpenForm }, ref) => {
+const ClienteDialog = ({ open, setOpenForm }: Props) => {
   const [label, setLabel] = useState<string>('Cadastrar')
   const { mutateAsync: createCliente } = usePostCliente()
   const { mutateAsync: updateCliente } = usePutCliente()
   const { id } = useParams()
   const navigate = useNavigate()
-  const formik = useFormikContext<Cliente>()
   const theme = useTheme()
 
   const initialValues: Cliente = {
     clI_COD: 0,
     nome: "",
-    sexo: 0,
+    sexo: "",
     datA_NASCIMENTO: moment().toISOString(),
     idade: 0,
     ciD_COD: 0
   }
 
-  const criarEEditarCliente = async () => {
+  const criarEEditarCliente = async (
+    values: Cliente, 
+    resetForm: (nextState?: Partial<FormikState<Cliente>> | undefined) => void
+    ) => {
     try {
       const dataPost: Cliente = {
         clI_COD: id ? parseInt(id) : 0,
-        nome: "",
-        sexo: 0,
-        datA_NASCIMENTO: moment().toISOString(),
-        idade: 0,
-        ciD_COD: 0
+        nome: values.nome,
+        sexo: values.sexo,
+        datA_NASCIMENTO: values.datA_NASCIMENTO,
+        idade: values.idade,
+        ciD_COD: values.ciD_COD
       }
 
       if(id) {
         await updateCliente(dataPost)
       } else {
         await createCliente(dataPost)
-        formik.resetForm()
+        resetForm()
       }
 
       Swal.fire({
@@ -81,16 +83,10 @@ const ClienteDialog = forwardRef<any, Props>(({ open, setOpenForm }, ref) => {
     }
   }
 
-  useImperativeHandle(ref, ()=> ({
-    criarEEditarCliente,
-    initialValues
-  }))
-
-  
-  const handleClose = () => {
+  const handleClose = (resetForm: FormikHandlers['handleReset']) => {
     setOpenForm(false)
-    formik.resetForm()
-    navigate("/cidades")
+    resetForm()
+    navigate("/clientes")
   }
 
   useEffect(() => {
@@ -102,25 +98,31 @@ const ClienteDialog = forwardRef<any, Props>(({ open, setOpenForm }, ref) => {
   }, [id])
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Criar novo Cliente</DialogTitle>
-      <Divider />
-      <DialogContent>
         <Formik
-            initialValues={initialValues}
-            onSubmit={async () => await criarEEditarCliente()}
-            validationSchema={validationSchema}
-            enableReinitialize={true}
-          >
-          <ClienteForm />
+          initialValues={initialValues}
+          onSubmit={async (values, { resetForm }) => await criarEEditarCliente(values, resetForm)}
+          validationSchema={validationSchema}
+          enableReinitialize={true}
+        >
+          {({
+            handleSubmit,
+            resetForm,
+            handleReset
+          }) => (
+            <Dialog open={open} onClose={() => handleClose(handleReset)}>
+              <DialogTitle>Criar novo Cliente</DialogTitle>
+              <Divider />
+              <DialogContent>
+                <ClienteForm />
+               <DialogActions sx={{ paddingY: 5 }}>
+                  <Button variant="contained" type="reset" color="info" onClick={() => handleClose(handleReset)}>Voltar</Button>
+                  <Button variant="contained" onClick={() => handleSubmit()}>{label}</Button>
+               </DialogActions>
+              </DialogContent>
+            </Dialog>
+          )}
         </Formik>
-        <DialogActions sx={{ paddingY: 5 }}>
-          <Button variant="contained" type="reset" color="info" onClick={handleClose}>Voltar</Button>
-          <Button variant="contained" onClick={() => formik.handleSubmit()}>{label}</Button>
-        </DialogActions>
-      </DialogContent>
-    </Dialog>
   )
-})
+}
 
 export default ClienteDialog

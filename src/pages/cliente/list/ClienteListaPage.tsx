@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import BoxContainer from "../../../components/box/BoxContainer"
 import { Grid, Typography, Divider, FormHelperText, Button, Box, IconButton, TextField, MenuItem } from '@mui/material'
@@ -138,12 +139,18 @@ const ClienteListaPage = () => {
           </Grid>
           <Grid item xs={3}>
             <TextField
+              id="nome"
+              name="nome"
               fullWidth
               select
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               size="small"
+              SelectProps={{
+                displayEmpty: true
+              }}
             >
+              <MenuItem value="">Selecione</MenuItem>
               {selectItens}
             </TextField>
           </Grid>

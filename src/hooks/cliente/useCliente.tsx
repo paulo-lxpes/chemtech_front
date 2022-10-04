@@ -4,7 +4,7 @@ import { useQuery, UseQueryResult, UseMutationResult, useMutation, useQueryClien
 interface Cliente {
   clI_COD: number
   nome: string
-  sexo: number
+  sexo: string
   datA_NASCIMENTO: string,
   idade: number
   ciD_COD: number
