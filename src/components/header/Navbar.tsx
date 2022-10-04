@@ -7,7 +7,8 @@ import {
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, /* useTheme */ } from '@mui/material/styles'
-import { ReactComponent as Logo } from '../../assets/imgs/logos/csp-logo.svg'
+import { ReactComponent as Logo } from '../../assets/images/logos/logo-branca.svg'
+/* import Logo from '../../assets/images/logos/logo.png' */
 
 interface Props {
   open: boolean
@@ -23,7 +24,7 @@ const Appbar = styled(MuiAppBar, {
 })<AppBarProps>(({ theme, open }) => ({
   // eslint-disable-next-line no-unsafe-optional-chaining
   zIndex: theme.zIndex.drawer + 1,
-  background: '#FFF',
+  background: theme.palette.primary.main,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -61,10 +62,9 @@ function Navbar({ open, setOpen }: Props): JSX.Element {
             component="div"
             sx={{
               width: '230px',
-              pt: 1,
             }}
           >
-              <Logo />
+              <Logo width={195} height={50} />
           </Grid>
           <Grid component="div" alignItems="center" justifyContent="center">
             <IconButton
@@ -73,10 +73,10 @@ function Navbar({ open, setOpen }: Props): JSX.Element {
               }}
               aria-label="open drawer"
               sx={{
-                color: 'green',
+                color: 'white',
                 display: { xs: 'none', md: 'flex' },
                 '&:hover': {
-                  color: 'green'
+                  color: 'white'
                 }
               }}
             >

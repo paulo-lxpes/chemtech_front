@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect} from "react";
 import { Route, Routes } from "react-router-dom";
-import routes from "../../routes/routes";
+/* import routes from "../../routes/routes"; */
 
 // routes config
 
@@ -14,7 +14,7 @@ const TheContent = () => {
     return (
         <Suspense fallback={loading}>
       <Routes>
-        {routes.map((route: { path: string; element: any; }, index: React.Key | null | undefined) => {
+{/*         {routes.map((route: { path: string; element: any; }, index: React.Key | null | undefined) => {
           return ((
             <Route
               key={index}
@@ -23,7 +23,7 @@ const TheContent = () => {
             />
           )
           );
-        })}
+        })} */}
       </Routes>
         </Suspense>
   );

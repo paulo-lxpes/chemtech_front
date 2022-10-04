@@ -1,13 +1,9 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import Notification from '../notification/Notification'
 import { NotificationContext } from '../../context/NotificationContext'
-import PathMenu from './PathMenu'
-import ListComportamentosChave from '../../pages/comportamentosChave/list/ListComportamentosChave'
 import { Grid } from '@mui/material'
-import routes from '../../routes/routes'
-import TheContent from './TheContent'
 interface Props {
   open: boolean
 }
@@ -58,13 +54,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 })); */
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
 
-function Body({ open }: Props): JSX.Element {
+const Body =({ open }: Props): JSX.Element => {
 
   const { activeNotify, setActiveNotify, msn, cor } =
     useContext(NotificationContext)
@@ -76,8 +67,6 @@ function Body({ open }: Props): JSX.Element {
         width: '100%',
       }}>
 
-      <PathMenu />
-
       <Grid
         container
         direction='row'
@@ -86,8 +75,7 @@ function Body({ open }: Props): JSX.Element {
         paddingX={5}
         paddingTop={5}
       >
-        <TheContent />
-
+        <Outlet />
         <Notification
           notifyActive={activeNotify}
           setNotify={setActiveNotify}
